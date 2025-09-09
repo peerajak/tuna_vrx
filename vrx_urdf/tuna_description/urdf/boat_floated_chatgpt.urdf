@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<robot name="tuna_usv">
+
+  <!-- Base hull -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://tuna_gazebo/meshes/boat.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="2 0.5 0.2"/> <!-- approximate bounding box for collisions -->
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+               iyy="2.0" iyz="0.0" izz="1.5"/>
+    </inertial>
+  </link>
+
+  <!-- Left propeller -->
+  <link name="prop_left">
+    <visual>
+      <geometry>
+        <mesh filename="package://tuna_gazebo/meshes/prop_left.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.2"/> <!-- simple collision -->
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+               iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Right propeller -->
+  <link name="prop_right">
+    <visual>
+      <geometry>
+        <mesh filename="package://tuna_gazebo/meshes/prop_right.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.2"/> <!-- simple collision -->
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+               iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Propeller joints -->
+  <joint name="prop_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop_left"/>
+    <origin xyz="-0.8 0.15 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="prop_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop_right"/>
+    <origin xyz="-0.8 -0.15 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- VRX Surface plugin for floating -->
+  <gazebo>
+    <plugin filename="libSurface.so" name="vrx::Surface">
+      <link_name>base_link</link_name>
+      <hull_length>2.0</hull_length>
+      <hull_radius>0.25</hull_radius>
+      <fluid_level>0</fluid_level>
+      <points>
+        <point>1.0 0.25 0</point>
+        <point>1.0 -0.25 0</point>
+        <point>-1.0 0.25 0</point>
+        <point>-1.0 -0.25 0</point>
+      </points>
+    </plugin>
+  </gazebo>
+
+</robot>
