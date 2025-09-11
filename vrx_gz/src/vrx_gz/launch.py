@@ -378,7 +378,8 @@ def spawn(sim_mode, world_name, models, robot=None):
                                     executable='robot_state_publisher',
                                     output='both',
                                     parameters=[params],
-                                    remappings=[('/joint_states', '/tuna/joint_states')]))
+                                    #remappings=[('/joint_states', '/tuna/joint_states')]
+                                    ))
             else:
                 # robot_state_publisher (tf for wamv)
                 model_dir = os.path.join(get_package_share_directory('vrx_gazebo'), 'models/wamv/tmp')

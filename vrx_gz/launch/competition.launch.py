@@ -80,18 +80,27 @@ def launch(context, *args, **kwargs):
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster"],
+        arguments=["joint_state_broadcaster", "-c", "/tuna/controller_manager"],
     )
 
     diff_drive_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["diff_drive_controller"],
+        arguments=["diff_drive_controller", "-c", "/tuna/controller_manager"],
+    )
+
+    thruster_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["thruster_controller", "-c", "/tuna/controller_manager"],
+        #namespace="tuna",
+        #output="screen"
     )
     launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
-    launch_processes.append(control_node)
+    #launch_processes.append(control_node)
     launch_processes.append(joint_state_broadcaster_spawner)
     launch_processes.append(diff_drive_controller_spawner)
+    #launch_processes.append(thruster_controller_spawner)
     return launch_processes
 
 

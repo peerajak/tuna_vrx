@@ -64,16 +64,14 @@
     <parent link="base_link"/>
     <child link="prop_right"/>
     <origin xyz="-0.14 -0.018 -0.043" rpy="0 -0.19 0"/>
-    <!-- axis xyz="1 0 0"/ -->
-    <axis xyz="0 1 0" />
+    <axis xyz="1 0 0"/>
   </joint>
 
   <joint name="base_to_prop_left" type="continuous">
     <parent link="base_link"/>
     <child link="prop_left"/>
     <origin xyz="-0.14 0.018 -0.043" rpy="0 -0.19 0"/>
-    <!-- axis xyz="1 0 0"/ -->
-    <axis xyz="0 1 0" />
+    <axis xyz="1 0 0"/>
   </joint>
 
   <!-- VRX SURFACE PLUGIN - This makes it float -->
@@ -107,7 +105,7 @@
       <wave>
         <model>PMS</model>
         <period>20.0</period>      <!-- Longer period = gentler waves -->
-        <amplitude>0.01</amplitude><!-- Lower amplitude = smaller waves -->
+        <amplitude>0.00</amplitude><!-- Lower amplitude = smaller waves -->
         <number>3</number>
         <scale>1.5</scale>
         <gain>0.5</gain>          <!-- Lower gain = calmer waves -->
@@ -142,8 +140,7 @@
   </gazebo>
   <ros2_control name="MobileBaseHardwareInterface" type="system">
         <hardware>
-            <plugin>mock_components/GenericSystem</plugin>
-            <param name="calculate_dynamics">true</param>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
         <joint name="base_to_prop_right">
             <command_interface name="velocity" />
@@ -156,4 +153,52 @@
             <state_interface name="velocity" />
         </joint>
   </ros2_control>
+  <gazebo>
+      <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>/home/peerajak/ros2_vrx_ws/install/share/tuna_gazebo/config/tuna_controllers.yaml</parameters>
+          <ros>
+            <namespace>/tuna</namespace>
+          </ros>
+          <controller_manager_node_name>controller_manager</controller_manager_node_name>
+      </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
+      <parent_link>base_link</parent_link>  <!-- Your boat's base link -->
+      <child_model>platform</child_model>         <!-- The world model to anchor to -->
+      <child_link>dummy_upper</child_link>        <!-- A dummy link in the world model -->
+      <topic>/vrx/release</topic>                 <!-- Topic to publish to for release -->
+      <suppress_child_warning>true</suppress_child_warning>
+    </plugin>
+  </gazebo>
+
+
+  <!-- plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
+    <joint_name>tuna/base_to_prop_right</joint_name>
+    <thrust_coefficient>0.004422</thrust_coefficient>
+    <fluid_density>1000</fluid_density>
+    <propeller_diameter>0.2</propeller_diameter>
+    <velocity_control>true</velocity_control>
+    < ! - - max total thrust / 2 - ->
+    <max_thrust_cmd>1000</max_thrust_cmd>
+    <namespace>tuna</namespace>
+    <topic>thrusters/right/thrust</topic>
+    <!- - Not used by Gazebo but used to run the bridge easily - ->
+    <name>tuna_right</name>
+  </plugin>
+
+  <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
+    <joint_name>tuna/base_to_prop_left</joint_name>
+    <thrust_coefficient>0.004422</thrust_coefficient>
+    <fluid_density>1000</fluid_density>
+    <propeller_diameter>0.2</propeller_diameter>
+    <velocity_control>true</velocity_control>
+    <! - - max total thrust / 2 - ->
+    <max_thrust_cmd>1000</max_thrust_cmd>
+    <namespace>tuna</namespace>
+    <topic>thrusters/left/thrust</topic>
+    < !- - Not used by Gazebo but used to run the bridge easily - ->
+    <name>tuna_left</name>
+  </plugin -->
 </robot>
