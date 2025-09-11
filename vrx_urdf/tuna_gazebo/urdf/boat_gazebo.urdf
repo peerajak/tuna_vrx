@@ -174,13 +174,13 @@
   </gazebo>
 
 
-  <!-- plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
-    <joint_name>tuna/base_to_prop_right</joint_name>
+  <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
+    <joint_name>base_to_prop_right</joint_name>
     <thrust_coefficient>0.004422</thrust_coefficient>
     <fluid_density>1000</fluid_density>
     <propeller_diameter>0.2</propeller_diameter>
     <velocity_control>true</velocity_control>
-    < ! - - max total thrust / 2 - ->
+    <!-- max total thrust / 2 -->
     <max_thrust_cmd>1000</max_thrust_cmd>
     <namespace>tuna</namespace>
     <topic>thrusters/right/thrust</topic>
@@ -189,16 +189,16 @@
   </plugin>
 
   <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
-    <joint_name>tuna/base_to_prop_left</joint_name>
+    <joint_name>base_to_prop_left</joint_name>
     <thrust_coefficient>0.004422</thrust_coefficient>
     <fluid_density>1000</fluid_density>
     <propeller_diameter>0.2</propeller_diameter>
     <velocity_control>true</velocity_control>
-    <! - - max total thrust / 2 - ->
+    <!-- max total thrust / 2 -->
     <max_thrust_cmd>1000</max_thrust_cmd>
     <namespace>tuna</namespace>
     <topic>thrusters/left/thrust</topic>
-    < !- - Not used by Gazebo but used to run the bridge easily - ->
+    <!-- Not used by Gazebo but used to run the bridge easily -->
     <name>tuna_left</name>
-  </plugin -->
+  </plugin>
 </robot>
