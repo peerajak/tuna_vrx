@@ -68,3 +68,17 @@ Your feedback and participation help make VRX better for everyone — thank you 
 
 We continue to receive important improvements from the community.  We have done our best to document this on our [Contributors Wiki](https://github.com/osrf/vrx/wiki/Contributors).
 
+
+Command
+
+```
+ros2 launch vrx_gz competition.launch.py world:=sydney_regatta model:=tuna name:=tuna urdf:=tuna
+```
+
+```
+colcon build --merge-install; source install/setup.bash
+```
+
+```
+ros2 topic pub /thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [10.0, 10.0]"
+```
