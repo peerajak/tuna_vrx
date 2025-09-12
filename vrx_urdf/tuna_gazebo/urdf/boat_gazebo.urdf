@@ -74,24 +74,6 @@
     <axis xyz="1 0 0"/>
   </joint>
 
-  <!-- VRX SURFACE PLUGIN - This makes it float -->
-  <gazebo>
-    <plugin filename="libSurface.so" name="vrx::Surface">
-      <link_name>base_link</link_name>
-      <hull_length>2.0</hull_length>
-      <hull_radius>0.25</hull_radius>
-      <fluid_level>0</fluid_level>
-      <points>
-        <point>1.0 0.25 0</point>
-        <point>1.0 -0.25 0</point>
-        <point>-1.0 0.25 0</point>
-        <point>-1.0 -0.25 0</point>
-      </points>
-      <wavefield>
-        <topic>/vrx/wavefield/parameters</topic>
-      </wavefield>
-    </plugin>
-  </gazebo>
 
   <!-- ADD WAVE CONTROL PARAMETERS -->
   <gazebo>
@@ -138,7 +120,7 @@
       name="gz::sim::systems::JointStatePublisher">
     </plugin>
   </gazebo>
-  <ros2_control name="MobileBaseHardwareInterface" type="system">
+  <!-- ros2_control name="MobileBaseHardwareInterface" type="system">
         <hardware>
           <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
@@ -161,7 +143,7 @@
           </ros>
           <controller_manager_node_name>controller_manager</controller_manager_node_name>
       </plugin>
-  </gazebo>
+  </gazebo  -->
 
   <gazebo>
     <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
@@ -173,32 +155,71 @@
     </plugin>
   </gazebo>
 
-
-  <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
+  <gazebo>
+    <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
     <joint_name>base_to_prop_right</joint_name>
-    <thrust_coefficient>0.004422</thrust_coefficient>
+    <thrust_coefficient>0.9</thrust_coefficient>
     <fluid_density>1000</fluid_density>
     <propeller_diameter>0.2</propeller_diameter>
     <velocity_control>true</velocity_control>
-    <!-- max total thrust / 2 -->
-    <max_thrust_cmd>1000</max_thrust_cmd>
+    <max_thrust_cmd>20</max_thrust_cmd>
     <namespace>tuna</namespace>
-    <topic>thrusters/right/thrust</topic>
-    <!- - Not used by Gazebo but used to run the bridge easily - ->
+    <topic>thrusters/tuna_right/thrust</topic>   
     <name>tuna_right</name>
   </plugin>
+    <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
+      <joint_name>base_to_prop_left</joint_name>
+      <thrust_coefficient>0.9</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.2</propeller_diameter>
+      <velocity_control>true</velocity_control>
+      <max_thrust_cmd>20</max_thrust_cmd>
+      <namespace>tuna</namespace>
+      <topic>thrusters/tuna_left/thrust</topic>
+      <name>tuna_left</name>
+    </plugin>
+  </gazebo>
 
-  <plugin filename="gz-sim-thruster-system" name="gz::sim::systems::Thruster">
-    <joint_name>base_to_prop_left</joint_name>
-    <thrust_coefficient>0.004422</thrust_coefficient>
-    <fluid_density>1000</fluid_density>
-    <propeller_diameter>0.2</propeller_diameter>
-    <velocity_control>true</velocity_control>
-    <!-- max total thrust / 2 -->
-    <max_thrust_cmd>1000</max_thrust_cmd>
-    <namespace>tuna</namespace>
-    <topic>thrusters/left/thrust</topic>
-    <!-- Not used by Gazebo but used to run the bridge easily -->
-    <name>tuna_left</name>
-  </plugin>
+
+    <!--Gazebo Plugin for simulating WAM-V dynamics-->
+    <gazebo>
+    <plugin filename="libSurface.so" name="vrx::Surface">
+      <link_name>base_link</link_name>
+      <hull_length>2.0</hull_length>
+      <hull_radius>0.25</hull_radius>
+      <fluid_level>0.05</fluid_level>
+      <points>
+        <point>1.0 0.25 0</point>
+        <point>1.0 -0.25 0</point>
+        <point>-1.0 0.25 0</point>
+        <point>-1.0 -0.25 0</point>
+      </points>
+      <wavefield>
+        <topic>/vrx/wavefield/parameters</topic>
+      </wavefield>
+    </plugin>
+      <plugin
+        filename="libSimpleHydrodynamics.so"
+        name="vrx::SimpleHydrodynamics">
+        <link_name>base_link</link_name>
+        <!-- Added mass -->
+        <xDotU>0.0</xDotU>
+        <yDotV>0.0</yDotV>
+        <nDotR>0.0</nDotR>
+        <!-- Linear and quadratic drag -->
+        <xU>0.0</xU>
+        <xUU>0.0</xUU>
+        <yV>0.0</yV>
+        <yVV>0.0</yVV>
+        <zW>0.0</zW>
+        <kP>0.0</kP>
+        <kPP>0.0</kPP>
+        <mQ>0.0</mQ>
+        <mQQ>0.0</mQQ>
+        <nR>0.0</nR>
+        <nRR>0.0</nRR>
+      </plugin>
+
+    </gazebo>
+
 </robot>

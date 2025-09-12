@@ -69,38 +69,44 @@ def launch(context, *args, **kwargs):
 
     if (sim_mode == 'bridge' or sim_mode == 'full') and bridge_competition_topics:
         launch_processes.extend(vrx_gz.launch.competition_bridges(world_name_base, competition_mode))
+    is_ros2_control = False
+    is_thurster_control = not is_ros2_control
     if robot_name == 'tuna':
-        control_node = Node(
-            package="controller_manager",
-            executable="ros2_control_node",
-            parameters=[ros2_control_config_file ],
-            remappings=[('/robot_description', '/tuna/robot_description'),('/joint_states', '/tuna/joint_states')],
-        )    
+        if is_ros2_control:
+            control_node = Node(
+                package="controller_manager",
+                executable="ros2_control_node",
+                parameters=[ros2_control_config_file ],
+                remappings=[('/robot_description', '/tuna/robot_description'),('/joint_states', '/tuna/joint_states')],
+            )    
+            
+            joint_state_broadcaster_spawner = Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["joint_state_broadcaster", "-c", "/tuna/controller_manager"],
+            )
+
+            diff_drive_controller_spawner = Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["diff_drive_controller", "-c", "/tuna/controller_manager"],
+            )
+
+            thruster_controller_spawner = Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["thruster_controller", "-c", "/tuna/controller_manager"],
+                #namespace="tuna",
+                #output="screen"
+            )
+            launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
+            #launch_processes.append(control_node)
+            launch_processes.append(joint_state_broadcaster_spawner)
+            launch_processes.append(diff_drive_controller_spawner)
+            #launch_processes.append(thruster_controller_spawner)
+        if is_thurster_control:
+            pass 
         
-        joint_state_broadcaster_spawner = Node(
-            package="controller_manager",
-            executable="spawner",
-            arguments=["joint_state_broadcaster", "-c", "/tuna/controller_manager"],
-        )
-
-        diff_drive_controller_spawner = Node(
-            package="controller_manager",
-            executable="spawner",
-            arguments=["diff_drive_controller", "-c", "/tuna/controller_manager"],
-        )
-
-        thruster_controller_spawner = Node(
-            package="controller_manager",
-            executable="spawner",
-            arguments=["thruster_controller", "-c", "/tuna/controller_manager"],
-            #namespace="tuna",
-            #output="screen"
-        )
-        launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
-        #launch_processes.append(control_node)
-        launch_processes.append(joint_state_broadcaster_spawner)
-        launch_processes.append(diff_drive_controller_spawner)
-        #launch_processes.append(thruster_controller_spawner)
     return launch_processes
 
 
