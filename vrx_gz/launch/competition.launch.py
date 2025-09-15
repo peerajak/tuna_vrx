@@ -110,7 +110,7 @@ def launch(context, *args, **kwargs):
             name='left_thrust_bridge',
             arguments=[
                 # Format: ROS_TOPIC@ROS_MSG_TYPE[GZ_MSG_TYPE
-                '/tuna/left_thrust_controller/commands@std_msgs/msg/Float64[gz.msgs.Double'
+                '/tuna/left_thrust_controller/commands@std_msgs/msg/Float64MultiArray[gz.msgs.Double'
             ],
             remappings=[
                 # Remap the Gazebo-side topic to your plugin's topic
@@ -125,12 +125,18 @@ def launch(context, *args, **kwargs):
             executable='parameter_bridge',
             name='right_thrust_bridge',
             arguments=[
-                '/tuna/right_thrust_controller/commands@std_msgs/msg/Float64[gz.msgs.Double'
+                '/tuna/right_thrust_controller/commands@std_msgs/msg/Float64MultiArray[gz.msgs.Double'
             ],
             remappings=[
                 ('/tuna/right_thrust_controller/commands', '/tuna/thrusters/tuna_right/thrust')
             ],
             output='screen'
+        )
+        tuna_thruster_bridge = Node(
+            package="tuna_thruster_bridge",
+            executable="thruster_relay_node",
+            name="thruster_relay_node",
+            output="screen",
         )
         launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
         #launch_processes.append(control_node)
@@ -140,6 +146,7 @@ def launch(context, *args, **kwargs):
         launch_processes.append(right_thruster_controller_spawner)
         launch_processes.append(left_thrust_bridge)
         launch_processes.append(right_thrust_bridge)
+        launch_processes.append(tuna_thruster_bridge)
     return launch_processes
 
 
