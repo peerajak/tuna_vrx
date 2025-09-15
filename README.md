@@ -72,5 +72,7 @@ ros2 control list_controllers -c /tuna/controller_manager
 expected result
 
 ```
-diff_drive_controller   diff_drive_controller/DiffDriveController      active
-joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster  active
+left_thruster_controller  forward_command_controller/ForwardCommandController  active
+right_thruster_controller forward_command_controller/ForwardCommandController  active
+joint_state_broadcaster   joint_state_broadcaster/JointStateBroadcaster        active
+```
