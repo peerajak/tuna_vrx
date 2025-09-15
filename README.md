@@ -56,3 +56,21 @@ ros2 topic pub /tuna/thrusters/tuna_right/thrust std_msgs/msg/Float64 "{data: 1.
 ```
 
 The reason I have both ros2 control and vrx thurster is that ros2 control will later use with real robot by hardware_interface. Therefore, one should use ros2 control to move the robot.
+
+### RVIZ2
+
+```
+rviz2 -d ~/ros2_vrx_ws/src/vrx/vrx_urdf/tuna_description/config/rviz_tuna.rviz
+```
+
+### To see the controller
+
+```
+ros2 control list_controllers -c /tuna/controller_manager
+```
+
+expected result
+
+```
+diff_drive_controller   diff_drive_controller/DiffDriveController      active
+joint_state_broadcaster joint_state_broadcaster/JointStateBroadcaster  active
