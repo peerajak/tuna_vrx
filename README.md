@@ -79,6 +79,23 @@ ros2 launch vrx_gz competition.launch.py world:=sydney_regatta model:=tuna name:
 colcon build --merge-install; source install/setup.bash
 ```
 
+ros2 control
+
 ```
-ros2 topic pub /thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [10.0, 10.0]"
+ros2 topic pub /tuna/left_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [10.0]"
+```
+
+
+```
+ros2 topic pub /tuna/right_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [10.0]"
+```
+
+vrx thruster command
+
+```
+ros2 topic pub /tuna/thrusters/tuna_left/thrust std_msgs/msg/Float64 "{data: 1.0}" -r 1
+```
+
+```
+ros2 topic pub /tuna/thrusters/tuna_right/thrust std_msgs/msg/Float64 "{data: 1.0}" -r 1
 ```

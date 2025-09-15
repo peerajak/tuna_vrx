@@ -89,18 +89,57 @@ def launch(context, *args, **kwargs):
             arguments=["diff_drive_controller", "-c", "/tuna/controller_manager"],
         )
 
-        thruster_controller_spawner = Node(
+        left_thruster_controller_spawner = Node(
             package="controller_manager",
             executable="spawner",
-            arguments=["thruster_controller", "-c", "/tuna/controller_manager"],
+            arguments=["left_thruster_controller", "-c", "/tuna/controller_manager"],
             #namespace="tuna",
             #output="screen"
+        )
+        right_thruster_controller_spawner = Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["right_thruster_controller", "-c", "/tuna/controller_manager"],
+            #namespace="tuna",
+            #output="screen"
+        )
+        # Bridge for the LEFT thruster: from ROS control to Gazebo physics
+        left_thrust_bridge = Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='left_thrust_bridge',
+            arguments=[
+                # Format: ROS_TOPIC@ROS_MSG_TYPE[GZ_MSG_TYPE
+                '/tuna/left_thrust_controller/commands@std_msgs/msg/Float64[gz.msgs.Double'
+            ],
+            remappings=[
+                # Remap the Gazebo-side topic to your plugin's topic
+                ('/tuna/left_thrust_controller/commands', '/tuna/thrusters/tuna_left/thrust')
+            ],
+            output='screen'
+        )
+
+        # Bridge for the RIGHT thruster
+        right_thrust_bridge = Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            name='right_thrust_bridge',
+            arguments=[
+                '/tuna/right_thrust_controller/commands@std_msgs/msg/Float64[gz.msgs.Double'
+            ],
+            remappings=[
+                ('/tuna/right_thrust_controller/commands', '/tuna/thrusters/tuna_right/thrust')
+            ],
+            output='screen'
         )
         launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
         #launch_processes.append(control_node)
         launch_processes.append(joint_state_broadcaster_spawner)
-        launch_processes.append(diff_drive_controller_spawner)
-        #launch_processes.append(thruster_controller_spawner)
+        #launch_processes.append(diff_drive_controller_spawner)
+        launch_processes.append(left_thruster_controller_spawner)
+        launch_processes.append(right_thruster_controller_spawner)
+        launch_processes.append(left_thrust_bridge)
+        launch_processes.append(right_thrust_bridge)
     return launch_processes
 
 
