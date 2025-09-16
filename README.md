@@ -36,12 +36,12 @@ colcon build --merge-install; source install/setup.bash
 ros2 control
 
 ```
-ros2 topic pub /tuna/left_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: 1.0"
+ros2 topic pub /tuna/left_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [1.0]"
 ```
 
 
 ```
-ros2 topic pub /tuna/right_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: 1.0"
+ros2 topic pub /tuna/right_thruster_controller/commands std_msgs/msg/Float64MultiArray "data: [1.0]"
 ```
 
 ### Alternatively, can move the robot with thruster directly

@@ -20,6 +20,7 @@ from launch.substitutions import LaunchConfiguration
 import os
 from ament_index_python.packages import get_package_share_path
 from launch_ros.parameter_descriptions import ParameterValue
+from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import Command
 from launch_ros.actions import Node
 import vrx_gz.launch
@@ -87,22 +88,21 @@ def launch(context, *args, **kwargs):
             package="controller_manager",
             executable="spawner",
             arguments=["diff_drive_controller", "-c", "/tuna/controller_manager"],
+            condition=IfCondition(LaunchConfiguration('use_diff_drive'))
         )
 
-        # left_thruster_controller_spawner = Node(
-        #     package="controller_manager",
-        #     executable="spawner",
-        #     arguments=["left_thruster_controller", "-c", "/tuna/controller_manager"],
-        #     #namespace="tuna",
-        #     #output="screen"
-        # )
-        # right_thruster_controller_spawner = Node(
-        #     package="controller_manager",
-        #     executable="spawner",
-        #     arguments=["right_thruster_controller", "-c", "/tuna/controller_manager"],
-        #     #namespace="tuna",
-        #     #output="screen"
-        # )
+        left_thruster_controller_spawner = Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["left_thruster_controller", "-c", "/tuna/controller_manager"],
+            condition=UnlessCondition(LaunchConfiguration('use_diff_drive'))
+        )
+        right_thruster_controller_spawner = Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["right_thruster_controller", "-c", "/tuna/controller_manager"],
+            condition=UnlessCondition(LaunchConfiguration('use_diff_drive'))
+        )
         #Bridge for the LEFT thruster: from ROS control to Gazebo physics
         left_thrust_bridge = Node(
             package='ros_gz_bridge',
@@ -132,12 +132,13 @@ def launch(context, *args, **kwargs):
             ],
             output='screen'
         )
-        # tuna_thruster_bridge = Node(
-        #     package="tuna_thruster_bridge",
-        #     executable="thruster_relay_node",
-        #     name="thruster_relay_node",
-        #     output="screen",
-        # )
+        tuna_thruster_bridge = Node(
+            package="tuna_thruster_bridge",
+            executable="thruster_relay_node",
+            name="thruster_relay_node",
+            output="screen",
+            condition=UnlessCondition(LaunchConfiguration('use_diff_drive'))
+        )
         joint_state_to_thrust_converter = Node(
             package='tuna_thruster_bridge',  # Replace with your actual package name
             executable='joint_state_to_thrust_converter',
@@ -147,16 +148,17 @@ def launch(context, *args, **kwargs):
                 'left_wheel_joint_name': LaunchConfiguration('left_wheel_joint_name'),
                 'right_wheel_joint_name': LaunchConfiguration('right_wheel_joint_name'),
             }],
+            condition=IfCondition(LaunchConfiguration('use_diff_drive'))
         )
         launch_processes.append(LogInfo(msg=f"config_file={config_file}, robot_name={robot_name}, model_type={model_type}") )
         #launch_processes.append(control_node)
         launch_processes.append(joint_state_broadcaster_spawner)
         launch_processes.append(diff_drive_controller_spawner)
-        #launch_processes.append(left_thruster_controller_spawner)
-        #launch_processes.append(right_thruster_controller_spawner)
+        launch_processes.append(left_thruster_controller_spawner)
+        launch_processes.append(right_thruster_controller_spawner)
         launch_processes.append(left_thrust_bridge)
         launch_processes.append(right_thrust_bridge)
-        #launch_processes.append(tuna_thruster_bridge)
+        launch_processes.append(tuna_thruster_bridge)
         launch_processes.append(joint_state_to_thrust_converter)
     return launch_processes
 
@@ -226,6 +228,12 @@ def generate_launch_description():
             'right_wheel_joint_name',
             default_value='base_to_dummy_prop_right',
             description='Name of the right wheel joint in joint_states message'
+        ),
+        DeclareLaunchArgument(
+            'use_diff_drive',
+            default_value='true',
+            description='Use diff_drive_controller (true) or individual thruster_controllers (false)',
+            choices=['true', 'false']
         ),
         OpaqueFunction(function=launch),
     ])
