@@ -9,6 +9,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -25,9 +27,19 @@ endif()
 
 add_executable(thruster_relay_node src/thruster_relay_node.cpp)
 ament_target_dependencies(thruster_relay_node rclcpp std_msgs)
-install(TARGETS thruster_relay_node DESTINATION lib/${PROJECT_NAME})
 
 
+add_executable(joint_state_to_thrust_converter src/joint_state_to_thrust_converter.cpp)
+ament_target_dependencies(joint_state_to_thrust_converter
+  rclcpp
+  sensor_msgs
+  std_msgs
+)
 
+install(TARGETS
+  thruster_relay_node 
+  joint_state_to_thrust_converter
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()

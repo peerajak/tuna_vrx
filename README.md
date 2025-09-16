@@ -63,7 +63,7 @@ The reason I have both ros2 control and vrx thurster is that ros2 control will l
 rviz2 -d ~/ros2_vrx_ws/src/vrx/vrx_urdf/tuna_description/config/rviz_tuna.rviz
 ```
 
-### To see the controller
+### To see the thruster controller
 
 ```
 ros2 control list_controllers -c /tuna/controller_manager
@@ -75,4 +75,24 @@ expected result
 left_thruster_controller  forward_command_controller/ForwardCommandController  active
 right_thruster_controller forward_command_controller/ForwardCommandController  active
 joint_state_broadcaster   joint_state_broadcaster/JointStateBroadcaster        active
+```
+
+### To use diff drive controller
+
+```
+ros2 topic pub /tuna/diff_drive_controller/cmd_vel geometry_msgs/msg/TwistStamped 'header:
+  stamp:
+    sec: 0
+    nanosec: 0
+  frame_id: ''
+twist:
+  linear:
+    x: 0.1
+    y: 0.0
+    z: 0.0
+  angular:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+' -r 10
 ```
