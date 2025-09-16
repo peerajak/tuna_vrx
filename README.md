@@ -96,3 +96,14 @@ twist:
     z: 0.0
 ' -r 10
 ```
+
+### To use joystick
+
+launch with use_diff_drive:=true, and plugin the joystick to USB port
+
+then
+
+```
+ros2 launch tuna_gazebo joy_teleop.launch.py
+```
+

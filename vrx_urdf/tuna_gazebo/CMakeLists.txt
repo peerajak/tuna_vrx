@@ -23,9 +23,22 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+
 install(
 	DIRECTORY launch meshes scripts urdf config
 	DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  PROGRAMS
+  src/tuna_gazebo/joy_teleop.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
+ament_python_install_package(
+  tuna_gazebo
+  PACKAGE_DIR src/tuna_gazebo
 )
 
 ament_package()
