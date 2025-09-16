@@ -1,0 +1,10 @@
+joy_teleop:
+  ros__parameters:
+    linear_axis: 1
+    angular_axis: 0
+    scale_linear: 1.0    # Max 1 m/s forward
+    scale_angular: 0.5   # Max 0.5 rad/s turning
+    deadzone: 0.1
+    enable_button: 0     # A button
+    turbo_button: 4      # LB button
+    turbo_multiplier: 2.0
