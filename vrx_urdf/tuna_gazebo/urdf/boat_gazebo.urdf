@@ -274,17 +274,17 @@
         <yDotV>0.0</yDotV>
         <nDotR>0.0</nDotR>
         <!-- Linear and quadratic drag -->
-        <xU>0.0</xU>
-        <xUU>0.0</xUU>
-        <yV>0.0</yV>
-        <yVV>0.0</yVV>
-        <zW>0.0</zW>
-        <kP>0.0</kP>
-        <kPP>0.0</kPP>
-        <mQ>0.0</mQ>
-        <mQQ>0.0</mQQ>
-        <nR>0.0</nR>
-        <nRR>0.0</nRR>
+        <xU>0.1</xU>
+        <xUU>0.1</xUU>
+        <yV>0.1</yV>
+        <yVV>0.1</yVV>
+        <zW>0.1</zW>
+        <kP>0.1</kP>
+        <kPP>0.1</kPP>
+        <mQ>0.1</mQ>
+        <mQQ>0.1</mQQ>
+        <nR>0.1</nR>
+        <nRR>0.1</nRR>
       </plugin>
 
     </gazebo>
